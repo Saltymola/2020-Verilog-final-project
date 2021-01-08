@@ -42,14 +42,11 @@ set_property PACKAGE_PIN B12 [get_ports y_valid]
 set_property IOSTANDARD LVCMOS33 [get_ports x_valid]
 set_property IOSTANDARD LVCMOS33 [get_ports y_valid]
 
-set_property IOSTANDARD LVCMOS33 [get_ports {dir[3]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {dir[2]}]
+
 set_property IOSTANDARD LVCMOS33 [get_ports {dir[1]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {dir[0]}]
-set_property PACKAGE_PIN V11 [get_ports {dir[3]}]
 set_property PACKAGE_PIN V12 [get_ports {dir[0]}]
-set_property PACKAGE_PIN V14 [get_ports {dir[2]}]
-set_property PACKAGE_PIN V15 [get_ports {dir[1]}]
+set_property PACKAGE_PIN V11 [get_ports {dir[1]}]
 
 set_property IOSTANDARD LVCMOS33 [get_ports {miss[3]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {miss[2]}]

@@ -21,7 +21,7 @@
 module dealX(
     input clk,
     input rst,
-    input [3:0]dir,
+    input [1:0]dir,
     input ena,
     output reg[11:0]x_begin
 );
@@ -52,14 +52,14 @@ begin
     begin
         if(!ena)
         begin
-            if(dir==4'b1000)
+            if(dir==2'b10)
             begin
                 if(x_begin>11'd0)
                 begin
                     x_begin<=x_begin-11'd2;
                 end
             end
-            else if(dir==4'b0001)
+            else if(dir==2'b01)
             begin
                 if(x_begin!=11'd640-11'd100)
                 begin

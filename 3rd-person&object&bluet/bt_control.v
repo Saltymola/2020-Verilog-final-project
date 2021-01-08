@@ -23,7 +23,7 @@ module bt_control(
     input rst,
     input get,
     output [3:0]choice,
-    output [3:0]dir
+    output [1:0]dir
     );
     parameter bps=10417;//对应9600波特率
     reg [14:0] count_1;//每一位中的计数器
@@ -33,7 +33,8 @@ module bt_control(
     reg add_en;//加法使能信号
     reg [7:0]out;
     
-    assign dir[3:0]=out[3:0];
+    assign dir[1]=out[3];
+    assign dir[0]=out[0];
     assign choice[3:0]=out[7:4];
     
     always @ (posedge clk)

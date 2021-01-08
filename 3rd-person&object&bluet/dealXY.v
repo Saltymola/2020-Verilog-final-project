@@ -19,20 +19,34 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 module rand_num(
+    input clk,
     input clk_cnt,
+    input [20:0]seed,
     input rst,
     output reg[11:0]x_begin
 );
-reg [20:0]seed=109,lamba=2333,n=233333;
+reg [15:0]local_seed,lamba=2333,n=233333;
+reg [31:0]cnt;
+
+always @(posedge clk or posedge rst)
+begin
+    if(rst)
+        cnt<=seed;
+    else
+        cnt<=cnt+1;
+end
 
 always @(posedge clk_cnt or posedge rst)
 begin
     if(rst)
-        x_begin<=11'd300;
+    begin
+        local_seed<=(cnt==0?16'd109:cnt[31:16]^cnt[15:0]);
+        x_begin<=(cnt==0?11'd300:{1'b0,1'b0,local_seed[8:0]});
+    end
     else
     begin
-        seed<=(seed*lamba)%n;
-        x_begin<=(seed)%600;
+        local_seed<=cnt[31:16]^cnt[15:0];
+        x_begin<={1'b0,local_seed[8:0]+10'd45};
     end
 end
 endmodule
@@ -40,6 +54,7 @@ endmodule
 module dealXY(
     input clk,
     input rst,
+    input [20:0]seed,
     input ena,
     input [11:0]p_x,
     output [11:0]x_begin,
@@ -55,7 +70,7 @@ reg [2:0]loop_cnt;
 
 assign clk_deal=cnt[20];
 
-rand_num randX(clk_cnt,rst,x_begin);
+rand_num randX(clk,clk_cnt,seed,rst,x_begin);
 
 always@(posedge clk or posedge rst)
 begin
@@ -76,12 +91,14 @@ begin
         y_begin<=11'd0;
         loop_cnt<=3'd0;
         clk_cnt<=0;
-        end_show<=0;
+        end_show<=1;
         score<=0;
         miss<=0;
     end
     else
     begin
+        if(loop_cnt<3'd4)
+            end_show<=0;
         if(ena)
         begin
             if(y_begin>=11'd340&&( (p_x>=x_begin&&(p_x-x_begin<=11'd40)) || (p_x<=x_begin)&&(x_begin-p_x<=11'd100) ) )
@@ -101,6 +118,7 @@ begin
             end
             else if(y_begin!=11'd440)
             begin
+                end_show<=0;
                 clk_cnt<=0;
                 y_begin<=y_begin+11'd1;
             end

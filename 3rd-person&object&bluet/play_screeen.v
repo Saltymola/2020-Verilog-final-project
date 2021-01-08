@@ -28,6 +28,7 @@ module play_screeen(
     output y_valid,//场时序信号
     output [3:0]  red_out,green_out,blue_out,//rgb像素信息
     output [3:0]score,
+    output [3:0]miss,
     output [3:0]dir
     );
 wire [15:0]data_color;
@@ -38,7 +39,9 @@ wire [11:0]x_begin;
 
 wire [11:0]obj_x_begin;
 wire [11:0]obj_y_begin;
-wire end_show;    
+wire obj_ena;
+wire end_show; 
+wire if_catch;   
 
 always@(posedge clk_vga or negedge rst)
 begin
@@ -63,7 +66,8 @@ bt_control b1(.clk(clk),.rst(!rst),.get(get_bluetooth),.dir(dir));
 dealX x1(clk,!rst,dir,addr_ena,x_begin); //处理人物位置
 blk_mem_gen_0 p1(.clka(clk_vga),.addra(addr),.douta(data_color));
 
-dealXY y1(clk,!rst,1,addr_ena,obj_x_begin,obj_y_begin,end_show);//处理物体位置
+assign obj_ena=~end_show;
+dealXY y1(clk,!rst,obj_ena,x_begin,obj_x_begin,obj_y_begin,end_show,score,miss);//处理物体位置,miss也可以放进去
 
-vga_display #(11'd100,11'd100) d1(clk_vga,!rst,end_show,x_begin,obj_x_begin,obj_y_begin,data_color,x_valid, y_valid,red_out,green_out,blue_out,addr_ena,score);
+vga_display #(11'd100,11'd100) d1(clk_vga,!rst,end_show,x_begin,obj_x_begin,obj_y_begin,data_color,x_valid, y_valid,red_out,green_out,blue_out,addr_ena);
 endmodule

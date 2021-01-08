@@ -31,8 +31,7 @@ module vga_display #(parameter l=11'd640,w=11'd480)(
     output reg[3:0] red,
     output reg[3:0] blue,
     output reg[3:0] green,
-    output addr_ena,
-    output reg[3:0]score
+    output addr_ena
 );
     parameter x_before=11'd144;
     parameter y_before=11'd35;
@@ -42,6 +41,7 @@ module vga_display #(parameter l=11'd640,w=11'd480)(
     wire [11:0] x_poi;//输出此时x的坐标
     wire [11:0] y_poi;//输出此时y的坐标
     wire is_display;//表征此时是否能够输出
+    
     wire obj_ena;
     assign obj_ena=((!end_show)&&(x_poi>=x_before+obj_x_begin-11'd2)&&(x_poi<x_before+obj_x_begin+11'd38)&&(y_poi>=(obj_y_begin+y_before))&&y_poi<(obj_y_begin+y_before+11'd40));
     assign addr_ena=(x_poi>=x_before+x_begin-11'd2&&x_poi<x_before+x_begin+l-11'd2&&y_poi-y_before>=y_size_pic-w&&y_poi-y_before<y_size_pic);
@@ -49,12 +49,8 @@ module vga_display #(parameter l=11'd640,w=11'd480)(
 
     vga_control control(clk_vga,rst,x_poi,y_poi,is_display,x_valid,y_valid);
     
-
-
     always@ (*)
     begin
-        if(rst)
-            score<=0;//碰撞检测待会再说
         red<=0;
         blue<=0;
         green<=0;

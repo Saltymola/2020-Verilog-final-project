@@ -40,16 +40,19 @@ endmodule
 module dealXY(
     input clk,
     input rst,
-    input [3:0]dir,
     input ena,
+    input [11:0]p_x,
     output [11:0]x_begin,
     output reg[11:0]y_begin,
-    output reg end_show
+    output reg end_show,
+    output reg [3:0]score,
+    output reg [3:0]miss
 );
 wire clk_deal;//60hz
 reg clk_cnt;
 reg [20:0]cnt;
 reg [2:0]loop_cnt;
+
 assign clk_deal=cnt[20];
 
 rand_num randX(clk_cnt,rst,x_begin);
@@ -74,40 +77,48 @@ begin
         loop_cnt<=3'd0;
         clk_cnt<=0;
         end_show<=0;
+        score<=0;
+        miss<=0;
     end
     else
     begin
-        if(!ena)
+        if(ena)
         begin
-            if(dir==4'b1000)
+            if(y_begin>=11'd340&&( (p_x>=x_begin&&(p_x-x_begin<=11'd40)) || (p_x<=x_begin)&&(x_begin-p_x<=11'd100) ) )
             begin
-                if(y_begin>11'd0)
-                begin
-                    y_begin<=y_begin-11'd1;
-                end
-            end
-            else if(dir==4'b0001)
-            begin
-                if(y_begin!=11'd480-11'd40)
-                begin
-                    clk_cnt<=0;
-                    y_begin<=y_begin+11'd1;
-                end
-                else
-                begin
+                    score<=score+1;
                     clk_cnt<=1;
-                    y_begin<=0;
                     if(loop_cnt<3'd4)
                     begin
                         loop_cnt<=loop_cnt+3'd1;
                         end_show<=0;
+                        y_begin<=0;
                     end
                     else
                     begin
                         end_show<=1;
                     end
-                 end
             end
+            else if(y_begin!=11'd440)
+            begin
+                clk_cnt<=0;
+                y_begin<=y_begin+11'd1;
+            end
+            else
+            begin
+                miss<=miss+1;
+                clk_cnt<=1;
+                if(loop_cnt<3'd4)
+                begin
+                    y_begin<=0;
+                    loop_cnt<=loop_cnt+3'd1;
+                    end_show<=0;
+                end
+                else
+                begin
+                    end_show<=1;
+                end
+             end
         end
     end
 end

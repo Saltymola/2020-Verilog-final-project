@@ -11,7 +11,7 @@ module tri_color(
 reg [3:0]score_change;
 reg [3:0]miss_change;
 wire mid_clk;
-Divider divider2(.I_CLK(CLK),.O_CLK(mid_clk));
+    Divider divider2(.I_CLK(clk),.O_CLK(mid_clk));
 
 always @ (posedge mid_clk or negedge rst)  
 begin  

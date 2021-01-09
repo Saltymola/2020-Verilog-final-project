@@ -48,29 +48,24 @@ begin
     if(rst)
     begin
         x_begin<=11'd270;
-        y_begin<=11'd190;
+        y_begin<=11'd379;
     end
     else
     begin
         if(!ena)
         begin
-            if(y_begin!=11'd379)
-                y_begin<=y_begin+11'd1;
-            else
+            if(dir==2'b10)
             begin
-                if(dir==2'b10)
+                if(x_begin>11'd0)
                 begin
-                    if(x_begin>11'd0)
-                    begin
-                        x_begin<=x_begin-11'd2;
-                    end
+                    x_begin<=x_begin-11'd2;
                 end
-                else if(dir==2'b01)
+            end
+            else if(dir==2'b01)
+            begin
+                if(x_begin!=11'd640-11'd100)
                 begin
-                    if(x_begin!=11'd640-11'd100)
-                    begin
-                        x_begin<=x_begin+11'd2;
-                    end
+                    x_begin<=x_begin+11'd2;
                 end
             end
         end

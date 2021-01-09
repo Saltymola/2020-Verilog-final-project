@@ -61,7 +61,7 @@ assign miss=miss1+miss2;
 
 always@(posedge clk_vga or negedge rst)
 begin
-    if(!rst)
+    if(!rst||(state!=3'b010))
     begin
         addr<=0;
     end
@@ -76,6 +76,7 @@ begin
         end
     end
 end
+
 
 clk_wiz_0 div(.clk_in1(clk),.clk_out1(clk_vga));
 deal_p x1(clk,(!rst||(state!=3'b010)),dir,addr_ena,x_begin,y_begin); //处理人物位置
@@ -114,7 +115,7 @@ begin
 end
 
 dealXY y1(clk,rst1,(21'b11110111101110111010),obj1_ena,x_begin,obj1_x_begin,obj1_y_begin,end_show1,score1,miss1),//处理物体位置,miss也可以放进去
-       y2(clk,(!rst2||(state!=3'b010)||(y_begin!=11'd379)),(21'b10010110101010110110),obj2_ena,x_begin,obj2_x_begin,obj2_y_begin,end_show2,score2,miss2);//处理物体位置,miss也可以放进去
+       y2(clk,(!rst2||(state!=3'b010)&&(state!=3'b100)&&(state!=3'b110)||(y_begin!=11'd379)),(21'b10010110101010110110),obj2_ena,x_begin,obj2_x_begin,obj2_y_begin,end_show2,score2,miss2);//处理物体位置,miss也可以放进去
 
-vga_display #(11'd100,11'd100) d1(clk_vga,!rst,end_show1,end_show2,x_begin,y_begin,obj1_x_begin,obj1_y_begin,obj2_x_begin,obj2_y_begin,data_color,x_valid, y_valid,red_out,green_out,blue_out,addr_ena);
+vga_display #(11'd100,11'd100) d1(clk_vga,!rst,state,end_show1,end_show2,x_begin,y_begin,obj1_x_begin,obj1_y_begin,obj2_x_begin,obj2_y_begin,data_color,x_valid, y_valid,red_out,green_out,blue_out,addr_ena);
 endmodule

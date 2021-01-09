@@ -22,6 +22,7 @@ module bt_control(
     input clk,
     input rst,
     input get,
+    input [2:0]state,
     output [1:0]dir,
     output [2:0]choice
     );
@@ -33,7 +34,7 @@ module bt_control(
     reg add_en;//加法使能信号
     reg [7:0]out;
     
-    assign dir=(choice==3'b011||choice==3'b100)?{out[3],out[0]}:2'b00;
+    assign dir=((choice==3'b011)&&(state==3'b010))?{out[3],out[0]}:2'b00;
     assign choice[2:0]=out[6:4];
     
     always @ (posedge clk)

@@ -34,8 +34,8 @@ always @(posedge mid_clk or negedge ena)
 begin
     if(!ena)
     begin
-        if(state==3'b001||state==3'b100||state==3'b101)
-            cnt<=3;
+        if(state==3'b110)
+            cnt<=2'b11;
         else
             cnt<=0;
         pause<=1;
@@ -44,10 +44,15 @@ begin
         pause<=1;
     else if(pause)
     begin
-        pause<=0;
-        if(cnt!=2'b11)
+        pause<=0;        
+        if(state!=3'b110)
+            cnt<=2'b11;
+        else
         begin
-            cnt<=cnt+1;
+            if(cnt!=2'b11)
+            begin
+                cnt<=cnt+1;
+            end
         end
     end
 end

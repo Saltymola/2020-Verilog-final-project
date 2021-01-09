@@ -11,7 +11,7 @@ module tri_color(
 reg [3:0]score_change;
 reg [3:0]miss_change;
 wire mid_clk;
-    Divider divider2(.I_CLK(clk),.O_CLK(mid_clk));
+Divider divider2(.I_CLK(clk),.O_CLK(mid_clk));
 
 always @ (posedge mid_clk or negedge rst)  
 begin  
@@ -22,20 +22,23 @@ begin
     end
     else  
     begin
-        if(miss_change!=miss)
+        if(state==3'b010)
         begin
-            tri_color1<=3'b100;
-            miss_change<=miss;
+            if(miss_change!=miss)
+            begin
+                tri_color1<=3'b100;
+                miss_change<=miss;
+            end
+            else
+                tri_color1<=3'b000;
+            if(score_change!=score)
+            begin
+                tri_color2<=3'b011;
+                score_change<=score;
+            end
+            else
+                tri_color2<=3'b000;
         end
-        else
-            tri_color1<=3'b000;
-        if(score_change!=score)
-        begin
-            tri_color2<=3'b011;
-            score_change<=score;
-        end
-        else
-            tri_color2<=3'b000;
     end
 end 
 endmodule

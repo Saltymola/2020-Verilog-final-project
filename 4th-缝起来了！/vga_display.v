@@ -21,6 +21,7 @@
 module vga_display #(parameter l=11'd640,w=11'd480)(
     input clk_vga,//输入vga的时钟，频率为25.175MHz
     input rst,//复位信号，高电平有效
+    input [2:0]state,
     input end_show1,
     input end_show2,
     input [11:0]x_begin,
@@ -73,7 +74,7 @@ module vga_display #(parameter l=11'd640,w=11'd480)(
                     green<=4'hf;
                     blue<=4'hf;
                 end
-                else if(addr_ena)
+                else if(addr_ena&&(state==3'b010))
                 begin
                     red<=color_data_in[15:12];
                     green<=color_data_in[10:7];
@@ -81,9 +82,18 @@ module vga_display #(parameter l=11'd640,w=11'd480)(
                 end
                 else
                 begin
-                    red<=4'hf;
-                    green<=4'hc;
-                    blue<=4'hd;
+                    if(state==3'b001||state==3'b100||state==3'b101)
+                    begin
+                        red<=4'hf;
+                        green<=4'hf;
+                        blue<=4'hf;
+                    end
+                    else
+                    begin
+                        red<=4'hf;
+                        green<=4'hc;
+                        blue<=4'hd;
+                    end
                 end
             end
             else
